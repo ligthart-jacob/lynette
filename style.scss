@@ -1,0 +1,164 @@
+
+@mixin desktop {
+  @media only screen and (min-width: 1440px) {
+    @content;
+  }
+}
+
+@mixin width {
+  width: 739px;
+  @include desktop {
+    width: 1253px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(#fff, #f0f0f0);
+  background-size: cover;
+  background-attachment: fixed;
+  margin: unset;
+}
+
+header {
+  @include width;
+  margin: auto;
+  padding: 3em 0;
+  nav {
+    display: flex;
+    justify-content: space-between;
+    a {
+      text-decoration: none;
+      color: #222;
+      font-size: 1.125em;
+    }
+    select {
+      appearance: none;
+      width: 25em;
+      font-size: 1.125em;
+      border: 0;
+      padding-bottom: .125em;
+      border-bottom: 1px solid #999;
+      text-overflow: ellipsis;
+      color: #222;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+
+section#forms {
+  .container {
+    @include width;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 2em;
+    form {
+      width: 50%;
+      display: flex;
+      gap: 1em;
+      flex-direction: column;
+      input, select {
+        appearance: none;
+        width: 100%;
+        font-size: 1em;
+        padding: .625em 1em;
+        border: 0;
+        border-radius: .25em;
+        text-overflow: ellipsis;
+        color: #666;
+        background: #f0f0f0;
+        &:focus {
+          outline: none;
+        }
+      }
+      button {
+        cursor: pointer;
+        padding: .5rem 1rem;
+        font-size: .875rem;
+        border-radius: 500rem;
+        border: 1px solid #ccc;
+        color: #999;
+        background-color: #fff;
+      }
+    }
+  }
+}
+
+section#collection {
+  margin: 3em auto;
+  display: flex;
+  flex-wrap: wrap;
+  @include width;
+  gap: 2em;
+}
+
+.card {
+  position: relative;
+  border-radius: .375em;
+  box-shadow: 0 .25rem .25rem #00000025;
+  img {
+    display: block;
+    border-radius: inherit;
+    &[data-love="0"]
+    {
+      filter: grayscale(1);
+    }
+  }
+  .overlay {
+    position: absolute;
+    z-index: 10;
+    height: 350px;
+    width: 225px;
+    display: none;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 1em;
+    background: linear-gradient(transparent, #343A52);
+    color: white;
+    gap: .125em;
+    border-radius: .375em;
+    .head {
+      display: flex;
+      justify-content: space-between;
+      button {
+        font-family: 'Font Awesome 6 Pro';
+        width: 2.5rem;
+        height: 2.5rem;
+        background: white;
+        border-radius: 500rem;
+        font-size: 1.125em;
+        cursor: pointer;
+        color: #ff63a9;
+        border: 0;
+        box-shadow: 0 .25rem .25rem #00000025;
+        &:hover {
+          color: white;
+          background: #ff63a9;
+        }
+      }
+    }
+    .body {
+      h3 {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 400;
+      }
+      a {
+        margin: 0;
+        font-size: .725rem;
+        font-weight: 300;
+        text-decoration: none;
+        color: white;
+        cursor: pointer;
+        &:hover { text-decoration: underline; }
+      }
+    }
+  }
+  &:hover { .overlay { display: flex; } }
+}
