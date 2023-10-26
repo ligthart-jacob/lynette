@@ -11,14 +11,14 @@
   <header>
     <nav>
       <a href="./">Home</a>
-      <select name="series" onchange="goToSeries(event.target.value)"></select>
-      <select id="sort" onchange="sortCards(event.target.value)">
+      <select name="series" onchange="Series.move(event.target.value)"></select>
+      <select id="sort" onchange="Character.sort()">
         <option value="new" selected>new</option>
         <option value="name">name</option>
         <option value="series">series</option>
         <option value="obtained">obtained</option>
       </select>
-      <select id="order" onchange="sortCards(event.target.value)">
+      <select id="order" onchange="Character.sort()">
         <option value="asc">asc</option>
         <option value="desc" selected>desc</option>
       </select>
@@ -27,21 +27,19 @@
   <main>
     <section id="forms">
       <div class="container">
-        <form onsubmit="handleAddCharacter(event)">
-          <input type="text" required name="characterName" placeholder="name">
+        <form onsubmit="Character.formHandler(event)">
+          <input type="text" required name="name" placeholder="name">
           <input type="text" required name="image" placeholder="image">
           <select name="series"></select>
           <button>add character</button>
         </form>
-        <form onsubmit="handleAddSeries(event)">
-          <input type="text" required name="seriesName" placeholder="name">
+        <form onsubmit="Series.formHandler(event)">
+          <input type="text" required name="name" placeholder="name">
           <button>add series</button>
         </form>
       </div>
     </section>
-    <section id="collection">
-
-    </section>
+    <section id="collection"></section>
     <span id="load"></span>
   </main>
 </body>

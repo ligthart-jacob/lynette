@@ -31,10 +31,8 @@ function create()
   // Insert the character
   $stmt = $connection->prepare("INSERT INTO `characters` (`name`, `image`, `seriesId`) 
     VALUES (?, ?, (SELECT `id` FROM `series` WHERE `uuid` = ?));");
-  $stmt->bind_param("sss", $_POST["characterName"], $path, $_POST["series"]);
+  $stmt->bind_param("sss", $_POST["name"], $path, $_POST["series"]);
   $stmt->execute();
-  // Return the image path
-  echo $path;
   // Close the connection
   $connection->close();
 }
