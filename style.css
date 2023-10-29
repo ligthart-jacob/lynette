@@ -2,11 +2,70 @@
   box-sizing: border-box;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   background: linear-gradient(#fff, #f0f0f0);
   background-size: cover;
   background-attachment: fixed;
   margin: unset;
+}
+
+section#overlay {
+  z-index: 40;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  background-color: rgba(34, 34, 34, 0.75);
+}
+section#overlay form {
+  padding: 2em;
+  background-color: #fff;
+  width: 60%;
+  flex-direction: column;
+  display: flex;
+  gap: 1em;
+}
+@media only screen and (min-width: 1440px) {
+  section#overlay form {
+    width: 30%;
+  }
+}
+section#overlay form input, section#overlay form select {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  width: 100%;
+  font-size: 1em;
+  padding: 0.625em 1em;
+  border: 0;
+  border-radius: 0.25em;
+  text-overflow: ellipsis;
+  color: #666;
+  background: #f0f0f0;
+}
+section#overlay form input:focus, section#overlay form select:focus {
+  outline: none;
+}
+section#overlay form .row {
+  display: flex;
+  justify-content: space-between;
+}
+section#overlay form .row button {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 500rem;
+  border: 1px solid #ccc;
+  color: #999;
+  background-color: #fff;
 }
 
 header {
@@ -42,6 +101,10 @@ header nav select {
 }
 header nav select:focus {
   outline: none;
+}
+
+main {
+  padding-bottom: 3em;
 }
 
 section#forms .container {
@@ -89,7 +152,7 @@ section#forms .container form button {
 }
 
 section#collection {
-  margin: 3em auto;
+  margin: 3em auto 0 auto;
   display: flex;
   flex-wrap: wrap;
   width: 739px;
@@ -99,6 +162,61 @@ section#collection {
   section#collection {
     width: 1253px;
   }
+}
+
+section#actions {
+  margin: 3em auto;
+  width: 739px;
+  display: flex;
+  gap: 2em;
+  justify-content: flex-end;
+}
+@media only screen and (min-width: 1440px) {
+  section#actions {
+    width: 1253px;
+  }
+}
+section#actions input {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  width: 100%;
+  font-size: 1em;
+  padding: 0.625em 1em;
+  border: 0;
+  border-radius: 0.25em;
+  text-overflow: ellipsis;
+  color: #666;
+  background: #f0f0f0;
+}
+section#actions input:focus {
+  outline: none;
+}
+section#actions div {
+  display: flex;
+  flex-direction: column;
+}
+section#actions div label {
+  font-size: 1em;
+  color: #222;
+  font-variant: small-caps;
+}
+section#actions div select {
+  width: 8em;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background: none;
+  font-size: 1.125em;
+  border: 0;
+  text-align: end;
+  padding-bottom: 0.125em;
+  border-bottom: 1px solid #999;
+  text-overflow: ellipsis;
+  color: #222;
+}
+section#actions div select:focus {
+  outline: none;
 }
 
 .card {

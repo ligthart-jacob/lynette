@@ -16,11 +16,64 @@
   box-sizing: border-box;
 }
 
+html { scrollbar-gutter: stable; }
+
 body {
   background: linear-gradient(#fff, #f0f0f0);
   background-size: cover;
   background-attachment: fixed;
   margin: unset;
+}
+
+section#overlay {
+  z-index: 40;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  background-color: rgba(#222, .75);
+  form {
+    padding: 2em;
+    background-color: #fff;
+    width: 60%;
+    @include desktop {
+      width: 30%;
+    }
+    flex-direction: column;
+    display: flex;
+    gap: 1em;
+    input, select {
+      appearance: none;
+      width: 100%;
+      font-size: 1em;
+      padding: .625em 1em;
+      border: 0;
+      border-radius: .25em;
+      text-overflow: ellipsis;
+      color: #666;
+      background: #f0f0f0;
+      &:focus {
+        outline: none;
+      }
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      button {
+        cursor: pointer;
+        padding: .5rem 1rem;
+        font-size: .875rem;
+        border-radius: 500rem;
+        border: 1px solid #ccc;
+        color: #999;
+        background-color: #fff;
+      }
+    }
+  }
 }
 
 header {
@@ -49,6 +102,10 @@ header {
       }
     }
   }
+}
+
+main {
+  padding-bottom: 3em;
 }
 
 section#forms {
@@ -91,11 +148,57 @@ section#forms {
 }
 
 section#collection {
-  margin: 3em auto;
+  margin: 3em auto 0 auto;
   display: flex;
   flex-wrap: wrap;
   @include width;
   gap: 2em;
+}
+
+section#actions {
+  margin: 3em auto;
+  @include width;
+  display: flex;
+  gap: 2em;
+  justify-content: flex-end;
+  input {
+    appearance: none;
+    width: 100%;
+    font-size: 1em;
+    padding: .625em 1em;
+    border: 0;
+    border-radius: .25em;
+    text-overflow: ellipsis;
+    color: #666;
+    background: #f0f0f0;
+    &:focus {
+      outline: none;
+    }
+  }
+  div {
+    display: flex;
+    flex-direction: column;
+    label {
+      font-size: 1em;
+      color: #222;
+      font-variant: small-caps;
+    }
+    select {
+      width: 8em;
+      appearance: none;
+      background: none;
+      font-size: 1.125em;
+      border: 0;
+      text-align: end;
+      padding-bottom: .125em;
+      border-bottom: 1px solid #999;
+      text-overflow: ellipsis;
+      color: #222;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
 }
 
 .card {

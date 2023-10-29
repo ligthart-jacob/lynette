@@ -27,7 +27,7 @@ function create()
 {
   $connection = connect();
   // Execute script that resizes images
-  $path = shell_exec("python ./../scripts/trim.py {$_POST['image']}");
+  $path = trim(shell_exec("python ./../scripts/trim.py {$_POST['image']}"));
   // Insert the character
   $stmt = $connection->prepare("INSERT INTO `characters` (`name`, `image`, `seriesId`) 
     VALUES (?, ?, (SELECT `id` FROM `series` WHERE `uuid` = ?));");
@@ -96,6 +96,36 @@ function obtain()
   $connection->close();
 }
 
+function update()
+{
+  $connection = connect();
+  // Execute script that resizes images
+  if (filter_var($_POST["image"], FILTER_VALIDATE_URL)) 
+  {
+    $_POST["image"] = trim(shell_exec("python ./../scripts/trim.py {$_POST['image']}"));
+    removeImage("/lynette" . $_POST['prevImage']);
+  }
+  // Insert the character
+  $stmt = $connection->prepare("UPDATE `characters` SET
+    `name` = ?,
+    `image` = ?,
+    `seriesId` = (SELECT `id` FROM `series` WHERE `uuid` = ?)
+    WHERE `uuid` = ?
+  ");
+  $stmt->bind_param("ssss", $_POST["name"], $_POST["image"], $_POST["series"], $_POST["uuid"]);
+  $stmt->execute();
+  // Show the new image link
+  echo $_POST["image"];
+  // Close the connection
+  $connection->close();
+}
+
+function removeImage($path)
+{
+  $path = $_SERVER['DOCUMENT_ROOT'] . $path;
+  if (file_exists($path)) unlink($path);
+}
+
 function remove()
 {
   $connection = connect();
@@ -103,8 +133,7 @@ function remove()
   $stmt->bind_param("s", $_POST["uuid"]);
   $stmt->execute();
   $connection->close();
-  $path = $_SERVER['DOCUMENT_ROOT'] . parse_url($_POST["image"], PHP_URL_PATH);
-  if (file_exists($path)) unlink($path);
+  removeImage(parse_url($_POST["image"], PHP_URL_PATH));
 }
 
 switch ($_GET["action"] ?? "view")
@@ -113,4 +142,5 @@ switch ($_GET["action"] ?? "view")
   case "view": return view();
   case "obtain": return obtain();
   case "remove": return remove();
+  case "update": return update();
 }

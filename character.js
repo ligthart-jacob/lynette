@@ -7,26 +7,64 @@ export let cards = [];
 export const config = {
   container: document.getElementById("collection"),
   current: urlParams.get("series") ?? null,
-  sort: "new",
-  order: "DESC",
   count: 0
 };
 
+// Character.overlay.open('${uuid}')
+
 const Card = ({ uuid, seriesUuid, name, series, obtained, image }) => `
   <div class="card">
-    <div class="overlay">
+    <div class="overlay" onmouseup="Character.overlay.open(event, '${uuid}')">
       <div class="head">
         <button onclick="Character.toggle(event.target, '${uuid}')">&#xf004;</button>
         <button onclick="Character.remove(event.target, '${uuid}')">&#xf05e;</button>
       </div>
       <div class="body">
-        <h3>${name}</h3>
-        <a href="?series=${seriesUuid}">${series}</a>
+        <h3 oncontextmenu="Character.copy(event)">${name}</h3>
+        <a oncontextmenu="Series.copy(event)" href="?series=${seriesUuid}">${series}</a>
       </div>
     </div>
     <img data-love="${obtained}" src=".${image}">       
   </div>
 `;
+
+export const overlay = {
+  node: document.getElementById("overlay"),
+  open: function(event, uuid) {
+    if (event.button != 4) return;
+    event.preventDefault();
+    const card = cards.filter(n => n.uuid == uuid)[0];
+    this.node.querySelector("input[name=uuid]").value = card.uuid; 
+    this.node.querySelector("input[name=prevImage]").value = card.image; 
+    this.node.querySelector("input[name=name]").value = card.name; 
+    this.node.querySelector("input[name=image]").value = card.image;
+    this.node.querySelector("select[name=series]").value = card.seriesUuid;
+    this.node.style.display = "flex";
+  },
+  close: function() { this.node.style.display = "none" },
+}
+
+export async function copy(event)
+{
+  event.preventDefault();
+  navigator.clipboard.writeText(event.target.innerText.split(', ').reverse().join(' '));
+}
+
+export async function updateFormHandler(event)
+{
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  formData.set("name", formatName(formData.get("name")));
+  // Submit the form data to the controller
+  await fetch("./controllers/characters.php?action=update", {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(formData)
+  }).then(res => res.text()).then(image => {
+    event.target.querySelector("input[name=prevImage]").value = image; 
+    load(cards.length);
+  });
+}
 
 export async function formHandler(event)
 {
@@ -40,12 +78,12 @@ export async function formHandler(event)
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams(formData)
-  }).then(_ => load(cards.length));
+  }).then(_ => load(cards.length < 30 ? 30 : cards.length));
 }
 
 export async function load(count = cards.length)
 {
-  cards = await fetcher(`./controllers/characters.php?action=view&series=${config.current}&sort=${config.sort}&order=${config.order}&amount=${count}`);
+  cards = await fetcher(`./controllers/characters.php?action=view&series=${config.current}&sort=${sessionStorage.getItem("sort") ?? "new"}&order=${sessionStorage.getItem("order") ?? "desc"}&amount=${count}`);
   view();
 }
 
@@ -58,8 +96,8 @@ export async function toggle(node, uuid)
 
 export async function sort()
 {
-  config.sort = document.getElementById("sort").value;
-  config.order = document.getElementById("order").value;
+  sessionStorage.setItem("sort", document.getElementById("sort").value);
+  sessionStorage.setItem("order", document.getElementById("order").value);
   load();
 }
 
@@ -100,4 +138,9 @@ function formatName(name)
     }
   }
   return name;
+}
+
+export function search(query)
+{
+  
 }

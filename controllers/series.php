@@ -14,9 +14,20 @@ function create()
 {
   $connection = connect();
   $stmt = $connection->prepare("INSERT INTO `series` (`uuid`, `name`) VALUES (?, ?)");
-  $stmt->bind_param("ss", $_POST["uuid"], $_POST["seriesName"]);
+  $stmt->bind_param("ss", $_POST["uuid"], $_POST["name"]);
   $stmt->execute();
-  $connection->close();
+  if ($connection->errno == 1062)
+  {
+    $stmt = $connection->prepare("SELECT `uuid` FROM `series` WHERE `name` = ?");
+    $stmt->bind_param("s", $_POST["name"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    echo $result->fetch_row()[0];
+  }
+  else {
+    echo $_POST["uuid"];
+  }
+  $connection->close(); 
 }
 
 function view()

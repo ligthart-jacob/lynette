@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Lynette - Cards</title>
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./main.js"></script>
 </head>
@@ -11,32 +12,56 @@
   <header>
     <nav>
       <a href="./">Home</a>
-      <select name="series" onchange="Series.move(event.target.value)"></select>
-      <select id="sort" onchange="Character.sort()">
-        <option value="new" selected>new</option>
-        <option value="name">name</option>
-        <option value="series">series</option>
-        <option value="obtained">obtained</option>
-      </select>
-      <select id="order" onchange="Character.sort()">
-        <option value="asc">asc</option>
-        <option value="desc" selected>desc</option>
+      <select name="series" onchange="Series.move(event.target.value)">
+        <option value="#">...loading</option>
       </select>
     </nav>
   </header>
   <main>
+    <section id="overlay">
+      <form onsubmit="Character.updateFormHandler(event)">
+        <input type="hidden" name="uuid">
+        <input type="hidden" name="prevImage">
+        <input type="text" required name="name" placeholder="name">
+        <input type="text" required name="image" placeholder="image">
+        <select name="series">
+          <option value="#">...loading</option>
+        </select>
+        <div class="row">
+          <button type="button" onclick="Character.overlay.close()">exit</button>
+          <button>update</button>
+        </div>
+      </form>
+    </section>
     <section id="forms">
       <div class="container">
         <form onsubmit="Character.formHandler(event)">
           <input type="text" required name="name" placeholder="name">
           <input type="text" required name="image" placeholder="image">
-          <select name="series"></select>
+          <select name="series">
+            <option value="#">...loading</option>
+          </select>
           <button>add character</button>
         </form>
         <form onsubmit="Series.formHandler(event)">
           <input type="text" required name="name" placeholder="name">
           <button>add series</button>
         </form>
+      </div>
+    </section>
+    <section id="actions">
+      <!-- <input class="input" onblur="Character.search(event.target.value)" placeholder="search..."> -->
+      <div>
+        <label for="sort">sort</label>
+        <select id="sort" onchange="Character.sort()">
+          <option value="#">loading...</option>
+        </select>
+      </div>
+      <div>
+        <label for="order">order</label>
+        <select id="order" onchange="Character.sort()">
+          <option value="#">loading...</option>
+        </select>
       </div>
     </section>
     <section id="collection"></section>

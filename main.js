@@ -15,4 +15,7 @@ const observer = new IntersectionObserver(async ([entry]) => {
   };
 });
 
+document.getElementById("sort").innerHTML = ["new", "name", "series", "obtained"].map(n => `<option ${n == (sessionStorage.getItem("sort") ?? "new") ? "selected" : ""} value="${n}">${n}</option>`)
+document.getElementById("order").innerHTML = ["asc", "desc"].map(n => `<option ${n == (sessionStorage.getItem("order") ?? "desc") ? "selected" : ""} value="${n}">${n}</option>`)
+
 observer.observe(document.getElementById("load"));
