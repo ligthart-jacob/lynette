@@ -102,8 +102,8 @@ function update()
   // Execute script that resizes images
   if (filter_var($_POST["image"], FILTER_VALIDATE_URL)) 
   {
-    $_POST["image"] = trim(shell_exec("python ./../scripts/trim.py {$_POST['image']}"));
     removeImage("/lynette" . $_POST['prevImage']);
+    $_POST["image"] = trim(shell_exec("python ./../scripts/trim.py {$_POST['image']}"));    
   }
   // Insert the character
   $stmt = $connection->prepare("UPDATE `characters` SET

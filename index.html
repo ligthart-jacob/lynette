@@ -36,15 +36,15 @@
     <section id="forms">
       <div class="container">
         <form onsubmit="Character.formHandler(event)">
-          <input type="text" required name="name" placeholder="name">
-          <input type="text" required name="image" placeholder="image">
+          <input type="text" required name="name" oncontextmenu="pasteClipBoard(event)" placeholder="name">
+          <input type="text" required name="image" oncontextmenu="pasteClipBoard(event)" placeholder="image">
           <select name="series">
             <option value="#">...loading</option>
           </select>
           <button>add character</button>
         </form>
         <form onsubmit="Series.formHandler(event)">
-          <input type="text" required name="name" placeholder="name">
+          <input type="text" required name="name" oncontextmenu="pasteClipBoard(event)" placeholder="name">
           <button>add series</button>
         </form>
       </div>

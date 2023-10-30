@@ -15,6 +15,12 @@ const observer = new IntersectionObserver(async ([entry]) => {
   };
 });
 
+window.pasteClipBoard = async function(event)
+{
+  event.preventDefault();
+  event.target.value = await navigator.clipboard.readText();
+}
+
 document.getElementById("sort").innerHTML = ["new", "name", "series", "obtained"].map(n => `<option ${n == (sessionStorage.getItem("sort") ?? "new") ? "selected" : ""} value="${n}">${n}</option>`)
 document.getElementById("order").innerHTML = ["asc", "desc"].map(n => `<option ${n == (sessionStorage.getItem("order") ?? "desc") ? "selected" : ""} value="${n}">${n}</option>`)
 

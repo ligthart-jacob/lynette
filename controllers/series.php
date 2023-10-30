@@ -13,21 +13,28 @@ function connect()
 function create()
 {
   $connection = connect();
-  $stmt = $connection->prepare("INSERT INTO `series` (`uuid`, `name`) VALUES (?, ?)");
-  $stmt->bind_param("ss", $_POST["uuid"], $_POST["name"]);
-  $stmt->execute();
-  if ($connection->errno == 1062)
+  try 
   {
-    $stmt = $connection->prepare("SELECT `uuid` FROM `series` WHERE `name` = ?");
-    $stmt->bind_param("s", $_POST["name"]);
+    $stmt = $connection->prepare("INSERT INTO `series` (`uuid`, `name`) VALUES (?, ?)");
+    $stmt->bind_param("ss", $_POST["uuid"], $_POST["name"]);
     $stmt->execute();
-    $result = $stmt->get_result();
-    echo $result->fetch_row()[0];
-  }
-  else {
     echo $_POST["uuid"];
   }
-  $connection->close(); 
+  catch (Exception $e)
+  {
+    if ($connection->errno == 1062)
+    {
+      $stmt = $connection->prepare("SELECT `uuid` FROM `series` WHERE `name` = ?");
+      $stmt->bind_param("s", $_POST["name"]);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      echo $result->fetch_row()[0];
+    }
+  }
+  finally
+  {
+    $connection->close(); 
+  }
 }
 
 function view()
