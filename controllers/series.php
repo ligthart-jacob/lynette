@@ -10,15 +10,21 @@ function connect()
   return $connection;
 }
 
+function getSlug($string, $delimiter = "-")
+{
+  return str_replace(" ", $delimiter, trim(preg_replace("/\W+/", " ", strtolower($string))));
+}
+
 function create()
 {
   $connection = connect();
+  $slug = getSlug($_POST["name"]);
   try 
   {
-    $stmt = $connection->prepare("INSERT INTO `series` (`uuid`, `name`) VALUES (?, ?)");
-    $stmt->bind_param("ss", $_POST["uuid"], $_POST["name"]);
+    $stmt = $connection->prepare("INSERT INTO `series` (`uuid`, `name`, `slug`) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $_POST["uuid"], $_POST["name"], $slug);
     $stmt->execute();
-    echo $_POST["uuid"];
+    echo $slug;
   }
   catch (Exception $e)
   {
@@ -28,7 +34,7 @@ function create()
       $stmt->bind_param("s", $_POST["name"]);
       $stmt->execute();
       $result = $stmt->get_result();
-      echo $result->fetch_row()[0];
+      echo $result->fetch_row()[2];
     }
   }
   finally
@@ -45,8 +51,42 @@ function view()
   $connection->close();
 }
 
+function update()
+{
+  $slug = getSlug($_POST["name"]);
+  $connection = connect();
+  $stmt = $connection->prepare("UPDATE `series` SET `name` = ?, `slug` = ? WHERE `uuid` = ?");
+  $stmt->bind_param("ss", $_POST["name"], $slug, $_POST["series"]);
+  $stmt->execute();
+  $connection->close();
+}
+
+function remove()
+{
+  $connection = connect();
+  try
+  {
+    $stmt = $connection->prepare("DELETE FROM `series` WHERE `uuid` = ?");
+    $stmt->bind_param("s", $_POST["series"]);
+    $stmt->execute();
+  }
+  catch (Exception $e)
+  {
+    if ($connection->errno == 1451)
+    {
+      http_response_code(405);
+    }
+  }
+  finally
+  {
+    $connection->close();
+  }
+}
+
 switch ($_GET["action"] ?? "view")
 {
   case "create": return create();
   case "view": return view();
+  case "update": return update();
+  case "remove": return remove();
 }

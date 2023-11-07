@@ -42,13 +42,53 @@ function view()
   $offset = $_GET["offset"] ?? 0;
   $amount = $_GET["amount"] ?? 30;
   $series = $_GET["series"] ?? false;
+  $search = $_GET["search"] ?? false;
   $sort = getSort();
 
   if ($series == "null") $series = false;
+  if ($search == "null") $search = false;
   
   $connection = connect();
 
-  if ($series)
+  if ($search && $series)
+  {
+    $search = "%" . $search . "%";
+    $stmt = $connection->prepare("SELECT 
+      `characters`.`uuid`, 
+      `characters`.`name`,
+      `characters`.`image`,
+      `characters`.`obtained`,
+      `series`.`name` as `series`,
+      `series`.`uuid` as `seriesUuid`,
+      `series`.`slug` as `slug`
+      FROM `characters` 
+      INNER JOIN `series` ON `characters`.`seriesId` = `series`.`id`
+      WHERE `characters`.`name` LIKE ? AND `series`.`uuid` = ?
+      ORDER BY $sort
+      LIMIT ?, ?"
+    );
+    $stmt->bind_param("ssii", $search, $series, $offset, $amount);
+  }
+  else if ($search)
+  {
+    $search = $search . "%";
+    $stmt = $connection->prepare("SELECT 
+      `characters`.`uuid`, 
+      `characters`.`name`,
+      `characters`.`image`,
+      `characters`.`obtained`,
+      `series`.`name` as `series`,
+      `series`.`uuid` as `seriesUuid`,
+      `series`.`slug` as `slug`
+      FROM `characters` 
+      INNER JOIN `series` ON `characters`.`seriesId` = `series`.`id`
+      WHERE `characters`.`name` LIKE ?
+      ORDER BY $sort
+      LIMIT ?, ?"
+    );
+    $stmt->bind_param("sii", $search, $offset, $amount);
+  } 
+  else if ($series)
   {
     $stmt = $connection->prepare("SELECT 
       `characters`.`uuid`, 
@@ -56,7 +96,8 @@ function view()
       `characters`.`image`,
       `characters`.`obtained`,
       `series`.`name` as `series`,
-      `series`.`uuid` as `seriesUuid`
+      `series`.`uuid` as `seriesUuid`,
+      `series`.`slug` as `slug`
       FROM `characters` 
       INNER JOIN `series` ON `characters`.`seriesId` = `series`.`id`
       WHERE `series`.`uuid` = ?
@@ -73,7 +114,8 @@ function view()
       `characters`.`image`,
       `characters`.`obtained`,
       `series`.`name` as `series`,
-      `series`.`uuid` as `seriesUuid`
+      `series`.`uuid` as `seriesUuid`,
+      `series`.`slug` as `slug`
       FROM `characters`
       INNER JOIN `series` ON `characters`.`seriesId` = `series`.`id`
       ORDER BY $sort

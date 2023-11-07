@@ -12,14 +12,14 @@
   <header>
     <nav>
       <a href="./">Home</a>
-      <select name="series" onchange="Series.move(event.target.value)">
+      <select name="series" onmouseup="Series.overlay.open(event)" onchange="Series.move(event.target.value)">
         <option value="#">...loading</option>
       </select>
     </nav>
   </header>
   <main>
     <section id="overlay">
-      <form onsubmit="Character.updateFormHandler(event)">
+      <form id="characterUpdate" style="display: none;" onsubmit="Character.updateFormHandler(event)">
         <input type="hidden" name="uuid">
         <input type="hidden" name="prevImage">
         <input type="text" required name="name" placeholder="name">
@@ -30,6 +30,17 @@
         <div class="row">
           <button type="button" onclick="Character.overlay.close()">exit</button>
           <button>update</button>
+        </div>
+      </form>
+      <form id="seriesUpdate" style="display: none;" onsubmit="Series.updateFormHandler(event)">
+        <select name="series">
+          <option value="#">...loading</option>
+        </select>
+        <input type="text" name="name" placeholder="new name">
+        <button name="action" value="remove">remove</button>
+        <div class="row">
+          <button type="button" onclick="Series.overlay.close()">exit</button>
+          <button name="action" value="update">update</button>
         </div>
       </form>
     </section>
@@ -50,7 +61,7 @@
       </div>
     </section>
     <section id="actions">
-      <!-- <input class="input" onblur="Character.search(event.target.value)" placeholder="search..."> -->
+      <input class="input" onblur="Character.search(event.target.value)" oncontextmenu="pasteClipBoard(event)" placeholder="search...">
       <div>
         <label for="sort">sort</label>
         <select id="sort" onchange="Character.sort()">

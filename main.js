@@ -1,5 +1,5 @@
-import * as Series from "./series.js"
-import * as Character from "./character.js"
+import * as Series from "./modules/series.js"
+import * as Character from "./modules/character.js"
 
 const batchSize = 30;
 
@@ -14,6 +14,14 @@ const observer = new IntersectionObserver(async ([entry]) => {
     await Character.load(Character.cards.length += batchSize);
   };
 });
+
+window.ondragover = event => event.preventDefault();
+window.ondragenter = event => event.preventDefault();
+window.ondrop = function(event)
+{
+  event.preventDefault();
+  document.querySelector("#forms input[name=image]").value = event.dataTransfer.getData("text") ?? "";
+}
 
 window.pasteClipBoard = async function(event)
 {

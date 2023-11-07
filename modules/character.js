@@ -7,6 +7,7 @@ export let cards = [];
 export const config = {
   container: document.getElementById("collection"),
   current: urlParams.get("series") ?? null,
+  search: null,
   count: 0
 };
 
@@ -30,6 +31,7 @@ const Card = ({ uuid, seriesUuid, name, series, obtained, image }) => `
 
 export const overlay = {
   node: document.getElementById("overlay"),
+  form: document.getElementById("characterUpdate"),
   open: function(event, uuid) {
     if (event.button != 4) return;
     event.preventDefault();
@@ -40,8 +42,9 @@ export const overlay = {
     this.node.querySelector("input[name=image]").value = card.image;
     this.node.querySelector("select[name=series]").value = card.seriesUuid;
     this.node.style.display = "flex";
+    this.form.style.display = "flex";
   },
-  close: function() { this.node.style.display = "none" },
+  close: function() { this.node.style.display = "none"; this.form.style.display = "none"; },
 }
 
 export async function copy(event)
@@ -83,7 +86,7 @@ export async function formHandler(event)
 
 export async function load(count = cards.length)
 {
-  cards = await fetcher(`./controllers/characters.php?action=view&series=${config.current}&sort=${sessionStorage.getItem("sort") ?? "new"}&order=${sessionStorage.getItem("order") ?? "desc"}&amount=${count}`);
+  cards = await fetcher(`./controllers/characters.php?action=view&series=${config.current}&search=${config.search}&sort=${sessionStorage.getItem("sort") ?? "new"}&order=${sessionStorage.getItem("order") ?? "desc"}&amount=${count}`);
   view();
 }
 
@@ -140,7 +143,8 @@ function formatName(name)
   return name;
 }
 
-export function search(query)
+export async function search(query)
 {
-  
+  config.search = query == "" ? null : encodeURIComponent(query.trim());
+  load(cards.length < 30 ? 30 : cards.length);
 }

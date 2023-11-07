@@ -1,7 +1,7 @@
-from PIL import Image
 from os.path import splitext
+from urllib.parse import unquote 
 import requests
-from PIL import GifImagePlugin
+from PIL import GifImagePlugin, Image
 import hashlib
 import sys
 
@@ -37,7 +37,7 @@ def cropFrame(frame):
 
 def handleMedia(url):
   _, extension = splitext(url)
-  with Image.open(requests.get(url, stream=True).raw) as media:      
+  with Image.open(unquote(url.removeprefix("file:///")) if url.startswith("file:///") else requests.get(url, stream=True).raw) as media:
     if (extension == ".gif"):
       return cropGif(media)
     else:
