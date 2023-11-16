@@ -30,7 +30,7 @@ function create()
   $path = trim(shell_exec("python ./../scripts/trim.py {$_POST['image']}"));
   // Insert the character
   $stmt = $connection->prepare("INSERT INTO `characters` (`name`, `image`, `seriesId`) 
-    VALUES (?, ?, (SELECT `id` FROM `series` WHERE `uuid` = ?));");
+    VALUES (?, ?, (SELECT `id` FROM `series` WHERE `slug` = ?));");
   $stmt->bind_param("sss", $_POST["name"], $path, $_POST["series"]);
   $stmt->execute();
   // Close the connection
@@ -63,7 +63,7 @@ function view()
       `series`.`slug` as `slug`
       FROM `characters` 
       INNER JOIN `series` ON `characters`.`seriesId` = `series`.`id`
-      WHERE `characters`.`name` LIKE ? AND `series`.`uuid` = ?
+      WHERE `characters`.`name` LIKE ? AND `series`.`slug` = ?
       ORDER BY $sort
       LIMIT ?, ?"
     );
@@ -97,10 +97,10 @@ function view()
       `characters`.`obtained`,
       `series`.`name` as `series`,
       `series`.`uuid` as `seriesUuid`,
-      `series`.`slug` as `slug`
+      `series`.`slug`
       FROM `characters` 
       INNER JOIN `series` ON `characters`.`seriesId` = `series`.`id`
-      WHERE `series`.`uuid` = ?
+      WHERE `series`.`slug` = ?
       ORDER BY $sort
       LIMIT ?, ?"
     );
@@ -151,7 +151,7 @@ function update()
   $stmt = $connection->prepare("UPDATE `characters` SET
     `name` = ?,
     `image` = ?,
-    `seriesId` = (SELECT `id` FROM `series` WHERE `uuid` = ?)
+    `seriesId` = (SELECT `id` FROM `series` WHERE `slug` = ?)
     WHERE `uuid` = ?
   ");
   $stmt->bind_param("ssss", $_POST["name"], $_POST["image"], $_POST["series"], $_POST["uuid"]);

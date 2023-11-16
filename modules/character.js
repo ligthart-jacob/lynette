@@ -13,7 +13,7 @@ export const config = {
 
 // Character.overlay.open('${uuid}')
 
-const Card = ({ uuid, seriesUuid, name, series, obtained, image }) => `
+const Card = ({ uuid, slug, name, series, obtained, image }) => `
   <div class="card">
     <div class="overlay" onmouseup="Character.overlay.open(event, '${uuid}')">
       <div class="head">
@@ -22,7 +22,7 @@ const Card = ({ uuid, seriesUuid, name, series, obtained, image }) => `
       </div>
       <div class="body">
         <h3 oncontextmenu="Character.copy(event)">${name}</h3>
-        <a oncontextmenu="Series.copy(event)" href="?series=${seriesUuid}">${series}</a>
+        <a oncontextmenu="Series.copy(event)" href="?series=${slug}">${series}</a>
       </div>
     </div>
     <img data-love="${obtained}" src=".${image}">       
@@ -40,7 +40,7 @@ export const overlay = {
     this.node.querySelector("input[name=prevImage]").value = card.image; 
     this.node.querySelector("input[name=name]").value = card.name; 
     this.node.querySelector("input[name=image]").value = card.image;
-    this.node.querySelector("select[name=series]").value = card.seriesUuid;
+    this.node.querySelector("select[name=series]").value = card.slug;
     this.node.style.display = "flex";
     this.form.style.display = "flex";
   },

@@ -24,10 +24,8 @@ export async function copy(event)
 export async function formHandler(event)
 {
   event.preventDefault();
-  const uuid = crypto.randomUUID();
   const formData = new FormData(event.target);
   formData.set("name", formData.get("name").trim());
-  formData.set("uuid", uuid);
   const result = await fetch("./controllers/series.php?action=create", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
@@ -56,8 +54,8 @@ export async function load()
   const series = await fetcher(`./controllers/series.php`);
   for (const entry of containers)
   {
-    entry.innerHTML = series.map(({ uuid, name }) => uuid == Character.config.current ? `<option selected value="${uuid}">${name}</option>` : `<option value="${uuid}">${name}</option>`)
+    entry.innerHTML = series.map(({ slug, name }) => slug == Character.config.current ? `<option selected value="${slug}">${name}</option>` : `<option value="${slug}">${name}</option>`)
   }
 }
 
-export const move = uuid => window.location.href = `?series=${uuid}`;
+export const move = slug => window.location.href = `?series=${slug}`;

@@ -21,6 +21,7 @@ window.ondrop = function(event)
 {
   event.preventDefault();
   document.querySelector("#forms input[name=image]").value = event.dataTransfer.getData("text") ?? "";
+  document.querySelector("#addCharacter ").click();
 }
 
 window.pasteClipBoard = async function(event)
