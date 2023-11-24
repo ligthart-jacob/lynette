@@ -79,8 +79,7 @@ export async function formHandler(event)
   // Submit the form data to the controller
   await fetch("./controllers/characters.php?action=create", {
     method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(formData)
+    body: formData
   }).then(_ => load(cards.length < 30 ? 30 : cards.length));
 }
 

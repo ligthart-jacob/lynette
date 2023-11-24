@@ -25,9 +25,11 @@ function getSort()
 
 function create()
 {
+  $file = $_FILES ? $_FILES["image"]["tmp_name"] : $_POST["image"];
+  $extension = explode(".", $_FILES ? $_FILES["image"]["name"] : $_POST["image"])[1];
   $connection = connect();
   // Execute script that resizes images
-  $path = trim(shell_exec("python ./../scripts/trim.py {$_POST['image']}"));
+  $path = trim(shell_exec("python ./../scripts/trim.py {$file} .{$extension}"));
   // Insert the character
   $stmt = $connection->prepare("INSERT INTO `characters` (`name`, `image`, `seriesId`) 
     VALUES (?, ?, (SELECT `id` FROM `series` WHERE `slug` = ?));");

@@ -17,11 +17,24 @@ const observer = new IntersectionObserver(async ([entry]) => {
 
 window.ondragover = event => event.preventDefault();
 window.ondragenter = event => event.preventDefault();
-window.ondrop = function(event)
+// window.ondrop = function(event)
+// {
+//   event.preventDefault();
+//   document.querySelector("#forms input[name=image]").value = event.dataTransfer.getData("text") ?? "";
+//   document.querySelector("#addCharacter ").click();
+// }
+
+window.toggleInput = async function(event)
 {
   event.preventDefault();
-  document.querySelector("#forms input[name=image]").value = event.dataTransfer.getData("text") ?? "";
-  document.querySelector("#addCharacter ").click();
+  if (event.shiftKey)
+  {
+    event.target.type = event.target.type == "text" ? "file" : "text";
+  }
+  else if (event.target.type == "text")
+  {
+    event.target.value = await navigator.clipboard.readText();
+  }
 }
 
 window.pasteClipBoard = async function(event)

@@ -50,13 +50,9 @@ def cropFrame(frame):
 
 
 def handleMedia(url):
-    _, extension = splitext(url)
-    local = True if url.startswith("file:///") else False
-    with Image.open(
-        unquote(url.removeprefix("file:///"))
-        if url.startswith("file:///")
-        else requests.get(url, stream=True).raw
-    ) as media:
+    local = False if url.startswith("http") else True
+    extension = sys.argv[2] if local else splitext(url)[1]
+    with Image.open(url if local else requests.get(url, stream=True).raw) as media:
         if extension == ".gif":
             return cropGif(media)
         elif not local:
@@ -66,10 +62,12 @@ def handleMedia(url):
             media.save(f"./../cards/{filename}{extension}")
             return f"/cards/{filename}{extension}"
 
+
 def main():
-    url = sys.argv[1]
+    url = sys.argv[1].split("?")[0]
     filename = handleMedia(url)
     print(filename)
+
 
 if __name__ == "__main__":
     main()
