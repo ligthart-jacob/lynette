@@ -3,6 +3,10 @@ import * as Character from "./modules/character.js"
 
 const batchSize = 30;
 
+const store = {
+  image: null
+}
+
 window.Character = Character;
 window.Series = Series;
 
@@ -29,7 +33,16 @@ window.toggleInput = async function(event)
   event.preventDefault();
   if (event.shiftKey)
   {
-    event.target.type = event.target.type == "text" ? "file" : "text";
+    if (event.target.type == "text")
+    {
+      store.image = event.target.value;
+      event.target.type = "file";
+    }
+    else
+    {
+      event.target.type = "text";
+      event.target.value = store.image;
+    }
   }
   else if (event.target.type == "text")
   {

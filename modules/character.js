@@ -61,8 +61,7 @@ export async function updateFormHandler(event)
   // Submit the form data to the controller
   await fetch("./controllers/characters.php?action=update", {
     method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(formData)
+    body: formData
   }).then(res => res.text()).then(image => {
     event.target.querySelector("input[name=prevImage]").value = image; 
     load(cards.length);

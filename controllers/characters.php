@@ -1,14 +1,6 @@
 <?php
 
-function connect()
-{
-  $connection = new mysqli("localhost", "root", "", "lynette_db");
-  if ($connection->connect_error)
-  {
-    die("Connection Failed: {$connection->connect_error}");
-  }
-  return $connection;
-}
+include_once "./../config.php";
 
 function getSort()
 {
@@ -144,10 +136,13 @@ function update()
 {
   $connection = connect();
   // Execute script that resizes images
-  if (filter_var($_POST["image"], FILTER_VALIDATE_URL)) 
+  if (filter_var($_POST["image"] ?? "", FILTER_VALIDATE_URL) || $_FILES) 
   {
-    removeImage("/lynette" . $_POST['prevImage']);
-    $_POST["image"] = trim(shell_exec("python ./../scripts/trim.py {$_POST['image']}"));    
+    $file = $_FILES ? $_FILES["image"]["tmp_name"] : $_POST["image"];
+    $extension = explode(".", $_FILES ? $_FILES["image"]["name"] : $_POST["image"])[1];
+    // Remove the previous image if there is one
+    if ($_POST["prevImage"]) removeImage("/lynette" . $_POST['prevImage']);
+    $_POST["image"] = trim(shell_exec("python ./../scripts/trim.py {$file} .{$extension} 2>&1"));
   }
   // Insert the character
   $stmt = $connection->prepare("UPDATE `characters` SET

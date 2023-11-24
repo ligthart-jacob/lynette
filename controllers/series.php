@@ -1,14 +1,6 @@
 <?php
 
-function connect()
-{
-  $connection = new mysqli("localhost", "root", "", "lynette_db");
-  if ($connection->connect_error)
-  {
-    die("Connection Failed: {$connection->connect_error}");
-  }
-  return $connection;
-}
+include_once "./../config.php";
 
 function getSlug($string, $delimiter = "-")
 {
