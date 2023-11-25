@@ -38,8 +38,10 @@ export const overlay = {
     const card = cards.filter(n => n.uuid == uuid)[0];
     this.node.querySelector("input[name=uuid]").value = card.uuid; 
     this.node.querySelector("input[name=prevImage]").value = card.image; 
-    this.node.querySelector("input[name=name]").value = card.name; 
-    this.node.querySelector("input[name=image]").value = card.image;
+    this.node.querySelector("input[name=name]").value = card.name;
+    const image = this.node.querySelector("input[name=image]");
+    if (image.type == "file") image.type = "text";
+    image.value = card.image;
     this.node.querySelector("select[name=series]").value = card.slug;
     this.node.style.display = "flex";
     this.form.style.display = "flex";
