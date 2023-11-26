@@ -10,16 +10,6 @@ const store = {
 window.Character = Character;
 window.Series = Series;
 
-window.test = async function()
-{
-  const formData = new FormData();
-  formData.set("image", "/cards/7c517b7e0476477c3536306ac2b12a60cb7e24a3e04f791d24222d9807fe88b5.png");
-  await fetch("./controllers/characters.php?action=test", {
-    method: "POST",
-    body: formData
-  }).then(res => res.text()).then(data => console.log(data));
-}
-
 await Series.load();
 await Character.load(batchSize);
 
