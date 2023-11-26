@@ -1,4 +1,5 @@
 from os.path import splitext
+from os import chmod
 from urllib.parse import unquote
 import requests
 from PIL import GifImagePlugin, Image
@@ -20,6 +21,7 @@ def cropImage(image, extension):
     croppedImage = croppedImage.resize((width, height))
     filename = rename(image)
     croppedImage.save(f"./../cards/{filename}{extension}")
+    chmod(f"./../cards/{filename}{extension}", 0o777)
     return f"/cards/{filename}{extension}"
 
 
@@ -38,6 +40,7 @@ def cropGif(image):
         duration=duration,
         loop=0,
     )
+    chmod(f"./../cards/{filename}.gif", 0o777)
     image.close()
     return f"/cards/{filename}.gif"
 
@@ -60,6 +63,7 @@ def handleMedia(url):
         else:
             filename = rename(media)
             media.save(f"./../cards/{filename}{extension}")
+            chmod(f"./../cards/{filename}{extension}", 0o777)
             return f"/cards/{filename}{extension}"
 
 

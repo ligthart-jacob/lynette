@@ -141,7 +141,7 @@ function update()
     $file = $_FILES ? $_FILES["image"]["tmp_name"] : $_POST["image"];
     $extension = explode(".", $_FILES ? $_FILES["image"]["name"] : $_POST["image"])[1];
     // Remove the previous image if there is one
-    if ($_POST["prevImage"]) removeImage("/lynette" . $_POST['prevImage']);
+    if ($_POST["prevImage"]) removeImage($_POST['prevImage']);
     $_POST["image"] = trim(shell_exec("python ./../scripts/trim.py {$file} .{$extension} 2>&1"));
   }
   // Insert the character
@@ -182,4 +182,5 @@ switch ($_GET["action"] ?? "view")
   case "obtain": return obtain();
   case "remove": return remove();
   case "update": return update();
+  case "test": return removeImage(parse_url($_POST["image"], PHP_URL_PATH));
 }
