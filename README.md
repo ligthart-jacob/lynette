@@ -1,2 +1,3 @@
 # lynette
-A vanilla javascript version of the alcea-cards projects. Suposed to work better.
+A vanilla Javascript & PHP project for managing characters from the Mudea discord-bot.
+The project currently requires the use of a mouse with side buttons in order to edit characters, and manage series
