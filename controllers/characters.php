@@ -34,7 +34,7 @@ function create()
 function view()
 {
   $offset = $_GET["offset"] ?? 0;
-  $amount = $_GET["amount"] ?? 30;
+  $amount = $_GET["amount"] ?? 15;
   $series = $_GET["series"] ?? false;
   $search = $_GET["search"] ?? false;
   $sort = getSort();

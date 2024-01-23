@@ -28,8 +28,7 @@ export async function formHandler(event)
   formData.set("name", formData.get("name").trim());
   const result = await fetch("./controllers/series.php?action=create", {
     method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(formData)
+    body: formData
   }).then(res => res.text());
   window.location.href = `./?series=${result}`;
 }

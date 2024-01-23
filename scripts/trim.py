@@ -10,10 +10,8 @@ GifImagePlugin.LOADING_STRATEGY = (
     GifImagePlugin.LoadingStrategy.RGB_AFTER_DIFFERENT_PALETTE_ONLY
 )
 
-
 def rename(image):
     return hashlib.sha256(image.tobytes()).hexdigest()
-
 
 def cropImage(image, extension):
     width, height = image.size

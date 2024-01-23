@@ -1,7 +1,7 @@
 import * as Series from "./modules/series.js"
 import * as Character from "./modules/character.js"
 
-const batchSize = 30;
+const batchSize = 15;
 
 const store = {
   image: null

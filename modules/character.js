@@ -81,7 +81,7 @@ export async function formHandler(event)
   await fetch("./controllers/characters.php?action=create", {
     method: "POST",
     body: formData
-  }).then(_ => load(cards.length < 30 ? 30 : cards.length));
+  }).then(_ => load(cards.length < 15 ? 15 : cards.length));
 }
 
 export async function load(count = cards.length)
@@ -146,5 +146,5 @@ function formatName(name)
 export async function search(query)
 {
   config.search = query == "" ? null : encodeURIComponent(query.trim());
-  load(cards.length < 30 ? 30 : cards.length);
+  load(cards.length < 15 ? 15 : cards.length);
 }
