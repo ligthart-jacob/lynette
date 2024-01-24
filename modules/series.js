@@ -3,12 +3,15 @@ const containers = [...document.querySelectorAll("select[name=series]")];
 
 const fetcher = async (url) => await fetch(url).then(res => res.json());
 
+export let series;
+
 export const overlay = {
   node: document.getElementById("overlay"),
   form: document.getElementById("seriesUpdate"),
   open: function(event) {
     if (event.button != 4) return;
     event.preventDefault();
+    this.node.querySelector("#seriesUpdate > input[name=name]").value = series.filter(x => x.slug == Character.config.current)[0]?.name ?? "";
     this.node.style.display = "flex";
     this.form.style.display = "flex";
   },
@@ -49,13 +52,15 @@ export async function updateFormHandler(event)
   })
 }
 
+async function view(entry)
+{
+  entry.innerHTML = series.map(({ slug, name }) => slug == Character.config.current ? `<option selected value="${slug}">${name}</option>` : `<option value="${slug}">${name}</option>`)
+}
+
 export async function load()
 {
-  const series = await fetcher(`./controllers/series.php`);
-  for (const entry of containers)
-  {
-    entry.innerHTML = series.map(({ slug, name }) => slug == Character.config.current ? `<option selected value="${slug}">${name}</option>` : `<option value="${slug}">${name}</option>`)
-  }
+  series = await fetcher(`./controllers/series.php`);
+  for (const entry of containers) view(entry);
 }
 
 export const move = slug => window.location.href = `?series=${slug}`;

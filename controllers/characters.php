@@ -17,8 +17,8 @@ function getSort()
 
 function create()
 {
-  $file = $_FILES ? $_FILES["image"]["tmp_name"] : $_POST["image"];
-  $extension = explode(".", $_FILES ? $_FILES["image"]["name"] : $_POST["image"])[1];
+  $file = $_FILES ? $_FILES["image"]["tmp_name"] : explode("?", $_POST["image"])[0];;
+  $extension = explode(".", $_FILES ? $_FILES["image"]["name"] : $file)[1];
   $connection = connect();
   // Execute script that resizes images
   $path = trim(shell_exec("python ./../scripts/trim.py {$file} .{$extension}"));
@@ -138,11 +138,11 @@ function update()
   // Execute script that resizes images
   if (filter_var($_POST["image"] ?? "", FILTER_VALIDATE_URL) || $_FILES) 
   {
-    $file = $_FILES ? $_FILES["image"]["tmp_name"] : $_POST["image"];
+    $file = $_FILES ? $_FILES["image"]["tmp_name"] : explode("?", $_POST["image"])[0];
     $extension = explode(".", $_FILES ? $_FILES["image"]["name"] : $_POST["image"])[1];
     // Remove the previous image if there is one
     if ($_POST["prevImage"]) removeImage($_POST['prevImage']);
-    $_POST["image"] = trim(shell_exec("python ./../scripts/trim.py {$file} .{$extension} 2>&1"));
+     $_POST["image"] = trim(shell_exec("python ./../scripts/trim.py {$file} .{$extension} 2>&1"));
   }
   // Insert the character
   $stmt = $connection->prepare("UPDATE `characters` SET

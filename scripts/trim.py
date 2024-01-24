@@ -68,7 +68,7 @@ def handleMedia(url):
 
 
 def main():
-    url = sys.argv[1].split("?")[0]
+    url = sys.argv[1]
     filename = handleMedia(url)
     print(filename)
 
