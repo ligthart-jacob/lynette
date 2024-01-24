@@ -43,7 +43,8 @@ export async function updateFormHandler(event)
     headers: { "Content-Type": "application/x-www-form-urlencoded"},
     body: new URLSearchParams(formData)
   }).then(res => {
-    if (res.ok) load();
+    if (formData.get("action") == "remove") window.location.href = "./";
+    else if (res.ok) load();
     else if (res.status == 405) alert("Series contains characters, remove them before proceding");
   })
 }
