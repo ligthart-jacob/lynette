@@ -31,8 +31,7 @@ export async function formHandler(event)
   formData.set("name", formData.get("name").trim());
   const result = await fetch("./controllers/series.php?action=create", {
     method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(formData)
+    body: formData
   }).then(res => res.text());
   window.location.href = `./?series=${result}`;
 }
@@ -47,7 +46,8 @@ export async function updateFormHandler(event)
     headers: { "Content-Type": "application/x-www-form-urlencoded"},
     body: new URLSearchParams(formData)
   }).then(res => {
-    if (res.ok) load();
+    if (formData.get("action") == "remove") window.location.href = "./";
+    else if (res.ok) load();
     else if (res.status == 405) alert("Series contains characters, remove them before proceding");
   })
 }

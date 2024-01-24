@@ -30,7 +30,6 @@ section#overlay form {
   background-color: #fff;
   width: 60%;
   flex-direction: column;
-  display: flex;
   gap: 1em;
 }
 @media only screen and (min-width: 1440px) {
