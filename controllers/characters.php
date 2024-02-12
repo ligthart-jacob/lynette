@@ -2,6 +2,16 @@
 
 include_once "./../config.php";
 
+function storeImage($url)
+{
+  $filename = uniqid(rand()) . ".png";
+  $source = imagecreatefromwebp($url);
+  $result = imagecreatetruecolor(225, 350);
+  imagecopyresized($result, $source, 0, 0, 1, 1, 225, 350, 223, 348);
+  imagepng($result, "./../cards/$filename");
+  return "/cards/$filename";
+}
+
 function getSort()
 {
   $order = strtoupper($_GET["order"] ?? "ASC");
@@ -17,11 +27,10 @@ function getSort()
 
 function create()
 {
-  $file = $_FILES ? $_FILES["image"]["tmp_name"] : explode("?", $_POST["image"])[0];;
-  $extension = explode(".", $_FILES ? $_FILES["image"]["name"] : $file)[1];
+  $file = $_FILES ? $_FILES["image"]["tmp_name"] : $_POST["image"];
   $connection = connect();
   // Execute script that resizes images
-  $path = trim(shell_exec("python ./../scripts/trim.py {$file} .{$extension}"));
+  $path = storeImage($file);
   // Insert the character
   $stmt = $connection->prepare("INSERT INTO `characters` (`name`, `image`, `seriesId`) 
     VALUES (?, ?, (SELECT `id` FROM `series` WHERE `slug` = ?));");
@@ -138,11 +147,10 @@ function update()
   // Execute script that resizes images
   if (filter_var($_POST["image"] ?? "", FILTER_VALIDATE_URL) || $_FILES) 
   {
-    $file = $_FILES ? $_FILES["image"]["tmp_name"] : explode("?", $_POST["image"])[0];
-    $extension = explode(".", $_FILES ? $_FILES["image"]["name"] : $_POST["image"])[1];
+    $file = $_FILES ? $_FILES["image"]["tmp_name"] : $_POST["image"];
     // Remove the previous image if there is one
     if ($_POST["prevImage"]) removeImage($_POST['prevImage']);
-     $_POST["image"] = trim(shell_exec("python ./../scripts/trim.py {$file} .{$extension} 2>&1"));
+      $_POST["image"] = storeImage($file);
   }
   // Insert the character
   $stmt = $connection->prepare("UPDATE `characters` SET
@@ -161,7 +169,7 @@ function update()
 
 function removeImage($path)
 {
-  $path = $_SERVER['DOCUMENT_ROOT'] . $path;
+  $path = "./..$path";
   if (file_exists($path)) unlink($path);
 }
 
