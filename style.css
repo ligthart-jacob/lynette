@@ -3,6 +3,7 @@
 }
 
 html {
+  overflow: auto;
   scrollbar-gutter: stable;
 }
 

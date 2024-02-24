@@ -58,7 +58,7 @@ function view()
     $search = "%" . $search . "%";
     $stmt = $connection->prepare("SELECT 
       `characters`.`uuid`, 
-      `characters`.`name`,
+      CONCAT_WS(', ', `lastname`, `firstname`) AS `name`,
       `characters`.`image`,
       `characters`.`obtained`,
       `series`.`name` as `series`,
@@ -77,7 +77,7 @@ function view()
     $search = $search . "%";
     $stmt = $connection->prepare("SELECT 
       `characters`.`uuid`, 
-      `characters`.`name`,
+      CONCAT_WS(', ', `lastname`, `firstname`) AS `name`,
       `characters`.`image`,
       `characters`.`obtained`,
       `series`.`name` as `series`,
@@ -95,7 +95,7 @@ function view()
   {
     $stmt = $connection->prepare("SELECT 
       `characters`.`uuid`, 
-      `characters`.`name`,
+      CONCAT_WS(', ', `lastname`, `firstname`) AS `name`,
       `characters`.`image`,
       `characters`.`obtained`,
       `series`.`name` as `series`,
@@ -113,7 +113,7 @@ function view()
   {
     $stmt = $connection->prepare("SELECT 
       `characters`.`uuid`, 
-      `characters`.`name`,
+      CONCAT_WS(', ', `lastname`, `firstname`) AS `name`,
       `characters`.`image`,
       `characters`.`obtained`,
       `series`.`name` as `series`,

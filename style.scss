@@ -16,7 +16,10 @@
   box-sizing: border-box;
 }
 
-html { scrollbar-gutter: stable; }
+html {
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
 
 body {
   background: linear-gradient(#fff, #f0f0f0);
