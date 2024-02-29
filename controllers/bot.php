@@ -11,23 +11,43 @@ function storeImage($url)
   return "/cards/$filename";
 }
 
+function propertyInArrayOfObjects($array, $property, $value)
+{
+    $matches = [];
+    foreach ($array as $object)
+    {
+        if ($object[$property] == $value)
+        {
+            array_push($matches, $object);
+        }
+    }
+    return $matches;
+}
+
 function getSlug($string, $delimiter = "-")
 {
   return str_replace(" ", $delimiter, trim(preg_replace("/\W+/", " ", strtolower($string))));
 }
 
-function getCharacter()
+function removeImage($path)
+{
+  $path = "./..$path";
+  if (file_exists($path)) unlink($path);
+}
+
+function getCharacters()
 {
     $connection = connect();
-    $stmt = $connection->prepare("SELECT CONCAT_WS(' ', `firstname`, `lastname`) as `name`, `series`.`name` as `series` FROM `characters`
+    $stmt = $connection->prepare("SELECT CONCAT_WS(' ', `firstname`, `lastname`) as `name`, `image`, `seriesId`, `series`.`name` as `series` FROM `characters`
         INNER JOIN `series` ON `characters`.`seriesId` = `series`.`id`
         WHERE CONCAT_WS(' ', `firstname`, `lastname`) = ? OR `series`.`name` = ?
     ");
     $stmt->bind_param("ss", $_POST["name"], $_POST["series"]);
     $stmt->execute();
     $result = $stmt->get_result();
-    return $result->fetch_assoc();
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
     $connection->close();
+    return $rows;
 }
 
 function addCharacter()
@@ -46,6 +66,23 @@ function addCharacter()
     $connection->close();
 }
 
+function updateCharacter($character)
+{
+    $connection = connect();
+    // Remove the current image
+    removeImage($character["image"]);
+    // Execute script that resizes images
+    $path = storeImage($_POST["image"]);
+    $stmt = $connection->prepare("UPDATE `characters` SET
+        `image` = ?,
+        `obtained` = ?
+        WHERE CONCAT_WS(' ', `firstname`, `lastname`) = ? AND `seriesId` = ?
+    ");
+    $stmt->bind_param("sssi", $path, $_POST["obtained"], $_POST["name"], $character["seriesId"]);
+    $stmt->execute();
+    $connection->close();
+}
+
 function addSeries()
 {
     $connection = connect();
@@ -60,23 +97,18 @@ function addSeries()
 
 if ($_POST)
 {
-    $character = getCharacter();
-    if ($character)
+    $characters = getCharacters();
+    if ($matches = propertyInArrayOfObjects($characters, "series", $_POST["series"]))
     {
-        if ($character["name"] != $_POST["name"])
+        if ($match = propertyInArrayOfObjects($matches, "name", $_POST["name"]))
         {
-            addCharacter();
-            echo json_encode(["message" => "Character added"]);
-        }
-        else if ($character["series"] != $_POST["series"])
-        {
-            addSeries();
-            addCharacter();
-            echo json_encode(["message" => "Character & Series added"]);
+            updateCharacter($match[0]);
+            echo json_encode(["message" => "Character updated"]);
         }
         else
         {
-            echo json_encode(["message" => "Character already exists"]);
+            addCharacter();
+            echo json_encode(["message" => "Character added"]);
         }
     }
     else
@@ -86,5 +118,3 @@ if ($_POST)
         echo json_encode(["message" => "Character & Series added"]);
     }
 }
-
-
