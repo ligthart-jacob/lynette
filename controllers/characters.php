@@ -18,8 +18,8 @@ function getSort()
   if ($order != "DESC" && $order != "ASC") $order = "ASC";
   switch ($_GET["sort"] ?? "new")
   {
-    case "name": return "`characters`.`name` $order";
-    case "series": return "`series`.`name` $order, `characters`.`name`";
+    case "name": return "`characters`.`firstname` $order";
+    case "series": return "`series`.`name` $order, `characters`.`firstname`";
     case "new": return "`characters`.`id` $order";
     case "obtained": return "`characters`.`obtained` $order";
   }
@@ -31,10 +31,12 @@ function create()
   $connection = connect();
   // Execute script that resizes images
   $path = storeImage($file);
+  // Lastname
+  $lastname = (bool)$_POST["lastname"] ? $_POST["lastname"] : null;
   // Insert the character
-  $stmt = $connection->prepare("INSERT INTO `characters` (`name`, `image`, `seriesId`) 
-    VALUES (?, ?, (SELECT `id` FROM `series` WHERE `slug` = ?));");
-  $stmt->bind_param("sss", $_POST["name"], $path, $_POST["series"]);
+  $stmt = $connection->prepare("INSERT INTO `characters` (`firstname`, `lastname`, `image`, `seriesId`) 
+    VALUES (?, ?, ?, (SELECT `id` FROM `series` WHERE `slug` = ?));");
+  $stmt->bind_param("ssss", $_POST["firstname"], $lastname, $path, $_POST["series"]);
   $stmt->execute();
   // Close the connection
   $connection->close();
@@ -66,7 +68,7 @@ function view()
       `series`.`slug` as `slug`
       FROM `characters` 
       INNER JOIN `series` ON `characters`.`seriesId` = `series`.`id`
-      WHERE `characters`.`name` LIKE ? AND `series`.`slug` = ?
+      WHERE `characters`.`firstname` LIKE ? AND `series`.`slug` = ?
       ORDER BY $sort
       LIMIT ?, ?"
     );
@@ -85,7 +87,7 @@ function view()
       `series`.`slug` as `slug`
       FROM `characters` 
       INNER JOIN `series` ON `characters`.`seriesId` = `series`.`id`
-      WHERE `characters`.`name` LIKE ?
+      WHERE `characters`.`firstname` LIKE ?
       ORDER BY $sort
       LIMIT ?, ?"
     );
@@ -152,14 +154,17 @@ function update()
     if ($_POST["prevImage"]) removeImage($_POST['prevImage']);
       $_POST["image"] = storeImage($file);
   }
+  // Lastname
+  $lastname = (bool)$_POST["lastname"] ? $_POST["lastname"] : null;
   // Insert the character
   $stmt = $connection->prepare("UPDATE `characters` SET
-    `name` = ?,
+    `firstname` = ?,
+    `lastname` = ?,
     `image` = ?,
     `seriesId` = (SELECT `id` FROM `series` WHERE `slug` = ?)
     WHERE `uuid` = ?
   ");
-  $stmt->bind_param("ssss", $_POST["name"], $_POST["image"], $_POST["series"], $_POST["uuid"]);
+  $stmt->bind_param("sssss", $_POST["firstname"], $lastname, $_POST["image"], $_POST["series"], $_POST["uuid"]);
   $stmt->execute();
   // Show the new image link
   echo $_POST["image"];

@@ -59,7 +59,10 @@ export async function updateFormHandler(event)
 {
   event.preventDefault();
   const formData = new FormData(event.target);
-  formData.set("name", formatName(formData.get("name")));
+  const [ firstname, lastname ] = formatName(formData.get("name"));
+  formData.delete("name");
+  formData.set("firstname", firstname);
+  formData.set("lastname", lastname);
   // Submit the form data to the controller
   await fetch("./controllers/characters.php?action=update", {
     method: "POST",
@@ -76,7 +79,10 @@ export async function formHandler(event)
   const formData = new FormData(event.target);
   event.target.children[0].value = "";
   event.target.children[1].value = "";
-  formData.set("name", formatName(formData.get("name")));
+  const [ firstname, lastname ] = formatName(formData.get("name"));
+  formData.delete("name");
+  formData.set("firstname", firstname);
+  formData.set("lastname", lastname);
   // Submit the form data to the controller
   await fetch("./controllers/characters.php?action=create", {
     method: "POST",
@@ -125,22 +131,21 @@ function view()
 
 function formatName(name)
 {
-  // Remove trailing whitespace
   name = name.trim();
-  if (name.includes(' '))
+  if (name.includes('\\'))
   {
-    if (name.includes('\\'))
-    {
-      return name.replace('\\', '');
-    }
-    else if (!name.includes(','))
-    {
-      const matches = name.match(/([^\s]*)\s(.*)/);
-      matches.shift();
-      return matches.reverse().join(', ');
-    }
+    return [name.replaceAll('\\', ''), 0];
   }
-  return name;
+  else if (name.includes(','))
+  {
+    const matches = name.match(/(.+),\s+(.+)/);
+    return [matches[1], matches[2]];
+  }
+  else
+  {
+    const [ firstname, ...lastname ] = name.match(/\w+/g);
+    return [firstname, lastname.length ? lastname.join(' ') : 0];
+  }
 }
 
 export async function search(query)
